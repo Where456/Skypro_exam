@@ -2,7 +2,6 @@ from hashlib import md5
 
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from sqlalchemy.exc import IntegrityError
 
 app = Flask("app")
@@ -10,13 +9,16 @@ app.config.from_pyfile("default_config.py")
 app.config.from_envvar("APP_SETTINGS", silent=True)
 
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(128), unique=True)
     password = db.Column(db.String(128))
+
+
+with app.app_context():
+    db.create_all()
 
 
 @app.route("/")
@@ -46,3 +48,7 @@ def register():
         return jsonify({"error": "already_exists"}), 400
 
     return jsonify({"username": user.username}), 200
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
