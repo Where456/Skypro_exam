@@ -1,20 +1,26 @@
-from hashlib import md5
-
+from marshmallow import Schema, fields
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 
-app = Flask("app")
+app = Flask(__name__)
 app.config.from_pyfile("default_config.py")
 app.config.from_envvar("APP_SETTINGS", silent=True)
 
 db = SQLAlchemy(app)
 
 
-class User(db.Model):
+class Note(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(128), unique=True)
-    password = db.Column(db.String(128))
+    text = db.Column(db.String(255))
+    date_added = db.Column(db.DateTime, default=func.now())
+
+
+class NoteSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    text = fields.String(required=True, max_length=255)
+    date_added = fields.DateTime(dump_only=True)
 
 
 with app.app_context():
@@ -22,33 +28,90 @@ with app.app_context():
 
 
 @app.route("/")
-def index():
-    users = User.query.all()
-    response = {
-        "total": len(users),
-        "users": [{"username": user.username} for user in users],
-        "test": "test"
-    }
-    return jsonify(response)
+def get_note():
+    """
+        Получает все заметки из базы данных и возвращает их в формате JSON.
+
+        Returns:
+            JSON: Список заметок в формате JSON.
+    """
+    notes = Note.query.all()
+    note_data = []
+    for note in notes:
+        note_data.append({
+            'id': note.id,
+            'text': note.text,
+            'date_added': note.date_added
+        })
+    return jsonify(note_data)
 
 
-@app.route("/api/register", methods=["POST"])
-def register():
-    user_data = request.json
-    if not user_data or "username" not in user_data or "password" not in user_data:
+@app.route("/add", methods=["POST"])
+def add_note():
+    """
+        Добавляет новую заметку в базу данных.
+
+        Returns:
+            JSON: Результат операции добавления.
+    """
+    note_data = request.json
+    if not note_data or "text" not in note_data:
         return jsonify({"error": "invalid_request"}), 400
 
     try:
-        user = User(
-            username=user_data["username"],
-            password=md5(user_data["password"].encode()).hexdigest(),
+        note = Note(
+            text=note_data["text"],
         )
-        db.session.add(user)
+        db.session.add(note)
         db.session.commit()
     except IntegrityError:
         return jsonify({"error": "already_exists"}), 400
 
-    return jsonify({"username": user.username}), 200
+    return jsonify({"text": note.text}), 200
+
+
+@app.route('/delete/<int:note_id>', methods=['DELETE'])
+def delete_note(note_id):
+    """
+        Удаляет заметку из базы данных по указанному идентификатору.
+
+        Args:
+            note_id (int): Идентификатор заметки.
+
+        Returns:
+            str: Результат операции удаления.
+    """
+    note = Note.query.get(note_id)
+
+    if note:
+        db.session.delete(note)
+        db.session.commit()
+        return f"Note with ID {note_id} has been deleted."
+    else:
+        return f"Note with ID {note_id} does not exist."
+
+
+@app.route('/notes/<int:note_id>', methods=['PUT'])
+def update_note(note_id):
+    """
+        Обновляет заметку в базе данных по указанному идентификатору.
+
+        Args:
+            note_id (int): Идентификатор заметки.
+
+        Returns:
+            str: Результат операции обновления.
+    """
+    note = Note.query.get(note_id)
+    if note:
+        new_title = request.json.get('text')
+
+        note.text = new_title if new_title else note.text
+
+        db.session.commit()
+        return f"Note with ID {note_id} has been updated."
+    else:
+        return f"Note with ID {note_id} does not exist."
 
 
 if __name__ == "__main__":

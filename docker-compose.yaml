@@ -4,7 +4,7 @@ services:
   api:
     build:
       context: .
-    image: where456/skypro_homework
+    image: where456/prepare_to_exam
     ports:
       - 80:80
     volumes:

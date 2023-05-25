@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   api:
-    image: where456/skypro_homework:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: where456/prepare_to_exam:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     ports:
       - 80:80
     volumes:
