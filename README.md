@@ -23,7 +23,7 @@ Request body: JSON object with a text field to specify the title and content of 
 Example request:
 ![img_2.png](static/img_2.png)
 ---
-### 3. changing data
+### 3. Changing data
 Method: PUT
 URL: http://localhost:5000/notes/{id}
 
