@@ -43,5 +43,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            cd flask_app_ci
+            cd exampreparationwithoutdao
             echo ${{ secrets.PASSWORD }} | sudo -S docker-compose up -d
