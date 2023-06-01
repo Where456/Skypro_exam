@@ -20,7 +20,7 @@ services:
       POSTGRES_PASSWORD: flask_app_password
       POSTGRES_DB: flask_app
     volumes:
-      - /home/new_pg_data:/var/lib/postgresql/data
+      - ./pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
