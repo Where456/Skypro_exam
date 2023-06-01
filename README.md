@@ -5,16 +5,16 @@ This tutorial provides a description and instructions for using a simple REST ap
 ## Routes and domains
 ### 1. Getting all data
 Method: GET
-URL: http://localhost:5000/notes
+URL: http://158.160.4.220/
 
 Description: Gets all data from the database.
 
 Example response:
-![img.png](static/img.png)
+<img width="357" alt="image" src="https://github.com/Where456/Skypro_exam/assets/119400636/1d2d220f-804b-432b-8045-5b411deb8984">
 ---
 ### 2. Adding new data
 Method: POST
-URL: http://localhost:5000/add
+URL: http://158.160.4.220/add
 
 Description: Adds new data to the database.
 
@@ -25,7 +25,7 @@ Example request:
 ---
 ### 3. Changing data
 Method: PUT
-URL: http://localhost:5000/notes/{id}
+URL: http://158.160.4.220/schedules/{id}
 
 Description: Changes the data in the database for the specified id.
 
@@ -36,7 +36,7 @@ Example request:
 ---
 ### 4. Deleting data
 Method: DELETE
-URL: http://localhost:5000/delete/{id}
+URL: http://158.160.4.220/delete/1{id}
 
 Description: Deletes data from the database for the specified id.
 
