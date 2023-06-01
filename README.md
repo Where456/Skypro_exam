@@ -47,4 +47,3 @@ Example request:
 <img width="330" alt="image" src="https://github.com/Where456/Skypro_exam/assets/119400636/41b6a63f-ce5b-468b-9d47-ca38a7ff3ad4">
 
 
-<img width="397" alt="image" src="https://github.com/Where456/Skypro_exam/assets/119400636/e6a8149f-0567-41da-8117-2382ebc31278">
